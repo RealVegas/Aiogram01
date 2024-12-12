@@ -40,7 +40,7 @@ async def weather(message: Message):
 
 @dp.message(Command('help'))
 async def bot_help(message: Message):
-    await message.answer('Этот бот умеет выполнять команды:\n/start - приветствие\n/help - помощь\nweather - погода в Екатеринбурге')
+    await message.answer('Этот бот умеет выполнять команды:\n/start - приветствие\n/help - помощь\n/weather - погода в Екатеринбурге')
 
 
 @dp.message(CommandStart())
