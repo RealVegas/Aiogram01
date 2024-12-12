@@ -1,26 +1,41 @@
 import asyncio
-from aiogram import Bot, Dispatcher, F, types
+from aiogram import Bot, Dispatcher, types
 from aiogram.filters import CommandStart, Command
 from aiogram.types import Message
 
 from config_data.bot_config import BOT_TOKEN
+from weather import CityWeather
 
-bot = Bot(token=BOT_TOKEN)
+bot: Bot = Bot(token=BOT_TOKEN)
 dp = Dispatcher()
 
 
-async def set_commands(bot: Bot):
+async def set_commands(robot: Bot) -> None:
     commands = [
-        types.BotCommand(command="/start", description="Запустить бота"),
-        types.BotCommand(command="/help", description="Помощь"),
-        types.BotCommand(command="/weather", description="Погода в Екатеринбурге"),
+        types.BotCommand(command='/start', description='Запустить бота'),
+        types.BotCommand(command='/help', description='Помощь'),
+        types.BotCommand(command='/weather', description='Погода в Екатеринбурге'),
     ]
-    await bot.set_my_commands(commands)
+    await robot.set_my_commands(commands)
 
 
 @dp.message(Command('weather'))
 async def weather(message: Message):
-    await message.answer('Этот бот умеет выполнять команды:\n/start - приветствие\n/help - помощь')
+    climate = CityWeather('Yekaterinburg,RU').get_weather()
+
+    if climate['desc'] != 'Данные о погоде не найдены':
+        await message.answer(f'Сегодня: {climate["date"]}\n'
+                             f'В городе: {climate["name"]}\n'
+                             f'Погодные условия: {climate["desc"]}\n'
+                             f'Температура воздуха: {climate["temp"]} °С\n'
+                             f'Ощущается как: {climate["feel"]} °С\n'
+                             f'Скорость ветра: {climate["wind"]} м/с\n'
+                             f'Относительная влажность: {climate["humid"]} %\n'
+                             f'Давление: {climate["press"]} мм. ртутного столба\n'
+                             f'Видимость: {climate["visi"]} км')
+    else:
+        await message.answer(f'Сегодня: {climate["date"]}\n'
+                             f'{climate['desc']}')
 
 
 @dp.message(Command('help'))

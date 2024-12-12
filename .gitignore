@@ -156,5 +156,5 @@ cython_debug/
 # PyCharm
 .idea/
 
-# Preview htmls
-news_project/main/templates/main/preview.html
+# Registration
+OpenWeatherRegister.txt
